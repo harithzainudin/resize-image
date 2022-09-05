@@ -1,0 +1,49 @@
+service: resize-image
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  memorySize: 128
+  architecture: arm64
+  region: ap-southeast-1
+  stage: dev
+  deploymentBucket:
+    name: serverless-base-dev-bucket
+  stackTags:
+    CreatedBy: "harithzainudin7@gmail.com"
+    ProjectName: "Resize Image"
+  environment:
+    INPUT_IMAGE_BUCKET_NAME: ${self:service}-${sls:stage}-bucket
+
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "lambda:*"
+          Resource: "*"
+        - Effect: "Allow"
+          Action: "s3:*"
+          Resource: "*"
+
+functions:
+  - ${file(./resources/functions.yml)}
+
+resources:
+  - ${file(./resources/s3.yml)}
+
+plugins:
+  - serverless-prune-plugin
+  - serverless-plugin-include-dependencies
+  - serverless-plugin-common-excludes
+
+custom:
+  includeDependencies:
+    enableCaching: true
+  prune:
+    automatic: true
+    number: 2
+
+package:
+  individually: true
