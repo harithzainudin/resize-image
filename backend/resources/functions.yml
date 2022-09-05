@@ -1,0 +1,13 @@
+resize-image:
+  handler: functions/resize-image/handler.lambda_handler
+  timeout: 20
+  reservedConcurrency: 2
+  description: Used to resize the image that is being put inside the s3 bucket
+  events:
+    - s3:
+        bucket: !Ref S3BucketResizeImage
+        event: s3:ObjectCreated:*
+        rules:
+          - prefix: input/
+          - suffix: .jpg, .png, .jpeg
+        existing: true
