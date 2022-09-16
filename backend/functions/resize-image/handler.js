@@ -1,5 +1,8 @@
-require("util").inspect.defaultOptions.depth = null;
+const { info, initializeContext } = require("../utils/logger");
+const { okResponse } = require("../utils/response");
 
 module.exports.lambda_handler = async (event, context) => {
-  console.log(event);
+  initializeContext(event, context);
+
+  return okResponse("resize-image", { event, context });
 };
