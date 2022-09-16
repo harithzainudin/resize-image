@@ -9,5 +9,4 @@ resize-image:
         event: s3:ObjectCreated:*
         rules:
           - prefix: input/
-          - suffix: .jpg, .png, .jpeg
         existing: true
