@@ -37,6 +37,7 @@ plugins:
   - serverless-prune-plugin
   - serverless-plugin-include-dependencies
   - serverless-plugin-common-excludes
+  - serverless-webpack
 
 custom:
   includeDependencies:
