@@ -10,3 +10,41 @@ resize-image:
         rules:
           - prefix: input/
         existing: true
+
+upload-image:
+  handler: functions/upload-image/handler.lambda_handler
+  timeout: 30
+  reservedConcurrency: 2
+  events:
+    - http:
+        method: post
+        path: image
+        cors:
+          origins: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false
+
+get-image:
+  handler: functions/get-image/handler.lambda_handler
+  timeout: 30
+  reservedConcurrency: 2
+  events:
+    - http:
+        method: get
+        path: image
+        cors:
+          origins: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - Authorization
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false
