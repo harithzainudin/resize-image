@@ -5,11 +5,11 @@ frameworkVersion: "3"
 provider:
   name: aws
   runtime: nodejs16.x
-  memorySize: 128
-  logRetentionInDays: 7
+  stage: dev
   architecture: arm64
   region: ap-southeast-1
-  stage: dev
+  memorySize: 128
+  logRetentionInDays: ${self:custom.logRetentionInDays.${sls:stage}, 7}
   deploymentBucket:
     name: serverless-base-dev-bucket
   stackTags:
@@ -41,6 +41,11 @@ plugins:
   - serverless-webpack
 
 custom:
+  logRetentionInDays:
+    dev: 7
+    staging: 7
+    prod: 30
+    uat: 30
   includeDependencies:
     enableCaching: true
   prune:
