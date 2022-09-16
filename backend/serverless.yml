@@ -17,6 +17,7 @@ provider:
     ProjectName: "Resize Image"
   environment:
     INPUT_IMAGE_BUCKET_NAME: ${self:service}-${sls:stage}-bucket
+    LOG_LEVEL: ${self:custom.logLevel.${sls:stage}, "info"}
 
   iam:
     role:
@@ -41,6 +42,13 @@ plugins:
   - serverless-webpack
 
 custom:
+  # accepted value & level
+  # error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6
+  logLevel:
+    dev: "debug"
+    staging: "debug"
+    prod: "info"
+    uat: "info"
   logRetentionInDays:
     dev: 7
     staging: 7
