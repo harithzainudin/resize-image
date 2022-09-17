@@ -1,4 +1,5 @@
 const winston = require("winston");
+require("util").inspect.defaultOptions.depth = null;
 const { setRequestId } = require("../utils/response");
 
 let logger = winston;
@@ -11,87 +12,79 @@ let logger = winston;
  * { error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6}
  */
 function initializeContext(event = null, context = null) {
-  setRequestId(context.awsRequestId);
+  setRequestId(context?.awsRequestId || null);
 
   logger = winston.createLogger({
     level: process.env.LOG_LEVEL || "info",
     format: winston.format.json(),
     transports: [new winston.transports.Console()],
     defaultMeta: {
-      service: context?.functionName || null,
       requestId: context?.awsRequestId || null,
+      service: context?.functionName || null,
+      timestamp:
+        event?.requestContext?.requestTimeEpoch || new Date().getTime(),
     },
   });
 
   event?.requestContext
-    ? info("Request Context Information", event.requestContext)
+    ? logger.info("Request Context", {
+        identity: event.requestContext,
+        payload: {
+          queryStringParameters: event?.queryStringParameters || null,
+          pathParameters: event?.pathParameters || null,
+          body: event?.body || null,
+        },
+      })
     : "";
 }
 
 /**
- * "Log an error with a subject and an error object."
- *
- * The subject is a string that describes the error. The error object is an object that contains
- * information about the error
- * @param subject - The subject or the meessage of the log.
- * @param [errorObject] - An object that contains the error details.
+ * Log an error message and an object containing error details.
+ * @param message - The message to log.
+ * @param [errorObject] - An object containing the error message and stack trace.
  */
-function error(subject, errorObject = {}) {
-  logger.error({
-    subject: subject,
-    detail: errorObject,
-  });
+function error(message, errorObject = {}) {
+  logger.error(message, { errors: errorObject });
 }
 
 /**
- * "Log an error with the given subject and detail object."
- *
- * The first line of the function is a comment. It's a good idea to include a comment at the top of
- * each function that describes what the function does
- * @param subject - The subject or the message of the log.
- * @param [warnObject] - An object that contains the details of the warning.
+ * Log a warning message with an optional object containing additional information.
+ * @param message - The message to be logged.
+ * @param [warningObject] - An object that contains the parameters that you want to log.
  */
-function warn(subject, warnObject = {}) {
-  logger.warn({
-    subject: subject,
-    detail: warnObject,
-  });
+function warn(message, warningObject = {}) {
+  logger.warn(message, { params: warningObject });
 }
 
 /**
- * It logs an info message with the given subject and infoObject
- * @param subject - The subject or the message of the log.
- * @param [infoObject] - This is an object that contains the details of the event.
+ * It logs a message with an optional object.
+ * @param message - The message to log.
+ * @param [infoObject] - This is an object that contains the parameters that you want to log.
  */
-function info(subject, infoObject = {}) {
-  logger.info({
-    subject: subject,
-    detail: infoObject,
-  });
+function info(message, infoObject = {}) {
+  logger.info(message, { params: infoObject });
 }
 
 /**
- * `verbose` is a function that takes a subject and a verboseObject and logs them to the console
- * @param subject - The subject of the log.
+ * > The `verbose` function is a wrapper for the `logger.verbose` function that allows us to pass in an
+ * object of parameters to be logged
+ * @param message - The message to log.
  * @param [verboseObject] - This is an object that will be logged to the console.
  */
-function verbose(subject, verboseObject = {}) {
-  logger.verbose({
-    subject: subject,
-    detail: verboseObject,
-  });
+function verbose(message, verboseObject = {}) {
+  logger.verbose(message, { params: verboseObject });
 }
 
 /**
- * It logs a debug message to the console.
- * @param subject - The subject of the log.
- * @param [debugObject] - This is an object that will be logged as a JSON string.
+ * "Log a message at the debug level, and include the given object as a parameter."
+ *
+ * The first parameter is the message to log. The second parameter is an object that will be included
+ * in the log message as a parameter
+ * @param message - The message to log.
+ * @param [debugObject] - This is an object that will be logged to the console.
  */
-function debug(subject, debugObject = {}) {
-  logger.debug({
-    subject: subject,
-    detail: debugObject,
-  });
+function debug(message, debugObject = {}) {
+  logger.debug(message, { params: debugObject });
 }
 
 module.exports = {
