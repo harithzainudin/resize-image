@@ -28,7 +28,7 @@ function initializeContext(event = null, context = null) {
 
   event?.requestContext
     ? logger.info("Request Context", {
-        identity: event.requestContext,
+        identity: event?.requestContext,
         payload: {
           queryStringParameters: event?.queryStringParameters || null,
           pathParameters: event?.pathParameters || null,
