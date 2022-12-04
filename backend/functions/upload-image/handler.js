@@ -25,7 +25,7 @@ module.exports.lambda_handler = async (event, context) => {
 
     const url = await getSignedUrl(client, command, { expiresIn: 3600 });
 
-    return okResponse("get-image", { url: url, fileName: imageName });
+    return okResponse("get-image", { url: url, file_name: imageName });
   } catch (e) {
     return errResponse(
       e instanceof QueryStringParameterException ? 400 : 500,

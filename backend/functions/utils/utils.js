@@ -19,7 +19,7 @@ function okResponse(message, data = {}) {
       "Access-Control-Allow-Credentials": true,
     },
     body: JSON.stringify({
-      requestId: requestId,
+      request_id: requestId,
       status_code: 200,
       message: message,
       data: data,
@@ -55,7 +55,7 @@ function errResponse(statusCode, message, errorObject = {}) {
       "Access-Control-Allow-Credentials": true,
     },
     body: JSON.stringify({
-      requestId: requestId,
+      request_id: requestId,
       status_code: statusCode,
       message: message,
       error: constructedError,
