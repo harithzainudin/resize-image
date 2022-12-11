@@ -5,7 +5,7 @@ const {
 } = require("../utils/utils");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4, validate } = require("uuid");
 const { QueryStringParameterException } = require("../utils/exceptions");
 
 module.exports.lambda_handler = async (event, context) => {
@@ -15,28 +15,46 @@ module.exports.lambda_handler = async (event, context) => {
 
     validateQueryString(event.queryStringParameters);
 
-    const imageName = event.queryStringParameters?.image_name || uuidv4();
-    const imageExt = event.queryStringParameters.image_ext;
-
     const command = new PutObjectCommand({
       Bucket: process.env.INPUT_IMAGE_BUCKET_NAME,
-      Key: `input/${imageName}.${imageExt}`,
+      Key: `input/${event.queryStringParameters.image_name}`,
     });
 
     const url = await getSignedUrl(client, command, { expiresIn: 3600 });
 
-    return okResponse("get-image", { url: url, file_name: imageName });
+    return okResponse("get-image", {
+      url: url,
+      file_name: event.queryStringParameters.image_name,
+    });
   } catch (e) {
     return errResponse(
       e instanceof QueryStringParameterException ? 400 : 500,
-      "get-image",
+      "Fail to generate signed url for upload image",
       e
     );
   }
 };
 
 function validateQueryString(qsp) {
-  if (!qsp?.image_ext) {
-    throw new QueryStringParameterException("image_ext is required");
+  if (!qsp?.image_name) {
+    throw new QueryStringParameterException("image_name is required");
+  }
+
+  if (!validate(qsp.image_name.split(".")[0])) {
+    throw new QueryStringParameterException(
+      "image_name must be in UUID format for unique name. Example: 4c9a2b8f-a7e8-4e9d-b8b4-f6a9c9d9b6b.jpeg"
+    );
+  }
+
+  const VALID_FILE_EXTENSION = ["jpeg", "jpg", "png"];
+
+  if (
+    !Object.values(VALID_FILE_EXTENSION).includes(
+      qsp.image_name.split(".").pop()
+    )
+  ) {
+    throw new QueryStringParameterException(
+      `Image name does not have a valid file extension. Must have extension with ${VALID_FILE_EXTENSION}`
+    );
   }
 }
