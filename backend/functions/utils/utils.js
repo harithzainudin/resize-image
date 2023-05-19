@@ -20,7 +20,7 @@ function okResponse(message, data = {}) {
     },
     body: JSON.stringify({
       request_id: requestId,
-      status_code: 200,
+      code: 200,
       message: message,
       data: data,
     }),
@@ -42,7 +42,6 @@ function errResponse(statusCode, message, errorObject = {}) {
       ? {
           name: errorObject.name,
           message: errorObject.message,
-          stack: errorObject.stack,
         }
       : errorObject;
 
@@ -56,7 +55,7 @@ function errResponse(statusCode, message, errorObject = {}) {
     },
     body: JSON.stringify({
       request_id: requestId,
-      status_code: statusCode,
+      code: statusCode,
       message: message,
       error: constructedError,
     }),
