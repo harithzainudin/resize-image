@@ -16,7 +16,7 @@ provider:
     CreatedBy: "harithzainudin7@gmail.com"
     ProjectName: "Resize Image"
   environment:
-    INPUT_IMAGE_BUCKET_NAME: ${self:service}-${sls:stage}-bucket
+    IMAGE_BUCKET_NAME: ${self:service}-${sls:stage}-bucket
     LOG_LEVEL: ${self:custom.logLevel.${sls:stage}, "info"}
 
   iam:
