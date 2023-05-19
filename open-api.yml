@@ -109,15 +109,14 @@ paths:
       description: "Generate presigned url to upload image into s3 bucket."
       summary: "Generate presigned URL for upload image"
       operationId: "upload-image"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_status:
-                  type: string
+      parameters:
+        - name: "image_name"
+          in: "query"
+          required: true
+          description: "Image name must be in UUID format"
+          example: "48014d77-78a7-4dec-9ff1-7aa1b838ba93.jpeg"
+          schema:
+            type: string
       responses:
         "200":
           description: "Success response for generating presigned URL for uploading an object"
