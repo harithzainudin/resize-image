@@ -2,4 +2,4 @@ Resources:
   S3BucketResizeImage:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: ${self:provider.environment.INPUT_IMAGE_BUCKET_NAME}
+      BucketName: ${self:provider.environment.IMAGE_BUCKET_NAME}
