@@ -43,7 +43,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      image:
+                      file_name:
                         type: string
                         example: "chicken.jpeg"
                       get_presigned_url:
