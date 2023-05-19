@@ -18,7 +18,7 @@ upload-image:
   events:
     - http:
         method: post
-        path: image
+        path: /image
         cors:
           origins: "*"
           headers:
@@ -37,7 +37,7 @@ get-image:
   events:
     - http:
         method: get
-        path: image
+        path: /image
         cors:
           origins: "*"
           headers:

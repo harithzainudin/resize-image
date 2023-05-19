@@ -13,18 +13,18 @@ module.exports.lambda_handler = async (event, context) => {
     validateQueryString(event.queryStringParameters);
 
     const url = await generatePutPresignedUrl(
-      process.env.INPUT_IMAGE_BUCKET_NAME,
+      process.env.IMAGE_BUCKET_NAME,
       `input/${event.queryStringParameters.image_name}`
     );
 
-    return okResponse("get-image", {
-      get_presigned_url: url,
+    return okResponse("Successfully generate upload presigned URL", {
+      upload_presigned_url: url,
       file_name: event.queryStringParameters.image_name,
     });
   } catch (e) {
     return errResponse(
       e instanceof QueryStringParameterException ? 400 : 500,
-      "Fail to generate signed url for upload image",
+      "Fail to generate upload presigned url",
       e
     );
   }

@@ -1,4 +1,4 @@
-const { initializeContext, okResponse } = require("../utils/utils");
+const { initializeContext, okResponse } = require("../../utils/utils");
 
 module.exports.lambda_handler = async (event, context) => {
   initializeContext(event, context);
