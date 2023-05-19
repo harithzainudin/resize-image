@@ -29,7 +29,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status_code:
+                  code:
                     type: integer
                     example: 200
                     maximum: 200
@@ -125,7 +125,7 @@ paths:
               schema:
                 type: object
                 properties:
-                  status_code:
+                  code:
                     type: integer
                     example: 200
                     minimum: 200
@@ -142,6 +142,9 @@ paths:
                       upload_presigned_url:
                         type: string
                         example: "https://your-bucket-name.s3.amazonaws.com/your-object-key?AWSAccessKeyId=YOUR_ACCESS_KEY&Expires=EXPIRATION_TIMESTAMP&Signature=URL_SIGNATURE"
+                      file_name:
+                        type: string
+                        example: "e8d29b33-96c8-43b6-ae37-ec9c2f81ece3.png"
         "500":
           description: "Internal server error"
           content:
