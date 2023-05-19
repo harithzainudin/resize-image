@@ -3,24 +3,19 @@ const {
   okResponse,
   errResponse,
 } = require("../../utils/utils");
-const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
-const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { v4: uuidv4, validate } = require("uuid");
 const { QueryStringParameterException } = require("../../utils/exceptions");
+const { generatePutPresignedUrl } = require("../../clients/s3");
 
 module.exports.lambda_handler = async (event, context) => {
   initializeContext(event, context);
   try {
-    const client = new S3Client();
-
     validateQueryString(event.queryStringParameters);
 
-    const command = new PutObjectCommand({
-      Bucket: process.env.INPUT_IMAGE_BUCKET_NAME,
-      Key: `input/${event.queryStringParameters.image_name}`,
-    });
-
-    const url = await getSignedUrl(client, command, { expiresIn: 3600 });
+    const url = await generatePutPresignedUrl(
+      process.env.INPUT_IMAGE_BUCKET_NAME,
+      `input/${event.queryStringParameters.image_name}`
+    );
 
     return okResponse("get-image", {
       get_presigned_url: url,
