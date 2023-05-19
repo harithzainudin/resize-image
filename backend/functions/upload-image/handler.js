@@ -2,11 +2,11 @@ const {
   initializeContext,
   okResponse,
   errResponse,
-} = require("../utils/utils");
+} = require("../../utils/utils");
 const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { v4: uuidv4, validate } = require("uuid");
-const { QueryStringParameterException } = require("../utils/exceptions");
+const { QueryStringParameterException } = require("../../utils/exceptions");
 
 module.exports.lambda_handler = async (event, context) => {
   initializeContext(event, context);
