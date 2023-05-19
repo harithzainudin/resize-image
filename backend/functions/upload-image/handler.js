@@ -23,7 +23,7 @@ module.exports.lambda_handler = async (event, context) => {
     const url = await getSignedUrl(client, command, { expiresIn: 3600 });
 
     return okResponse("get-image", {
-      url: url,
+      get_presigned_url: url,
       file_name: event.queryStringParameters.image_name,
     });
   } catch (e) {
