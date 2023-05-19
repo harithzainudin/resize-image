@@ -1,7 +1,8 @@
 resize-image:
   handler: functions/resize-image/handler.lambda_handler
-  timeout: 20
+  timeout: 60
   reservedConcurrency: 2
+  memorySize: 256
   description: Used to resize the image that is being put inside the s3 bucket
   events:
     - s3:
@@ -15,6 +16,7 @@ upload-image:
   handler: functions/upload-image/handler.lambda_handler
   timeout: 30
   reservedConcurrency: 2
+  memorySize: 128
   events:
     - http:
         method: post
@@ -34,6 +36,7 @@ get-image:
   handler: functions/get-image/handler.lambda_handler
   timeout: 30
   reservedConcurrency: 2
+  memorySize: 128
   events:
     - http:
         method: get
