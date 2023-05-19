@@ -1,0 +1,172 @@
+openapi: "3.0.0"
+
+info:
+  description: "OpenAPI Specifications for Resize Image backend"
+  version: "1.0.1"
+  title: "Resize Image"
+
+paths:
+  /image:
+    get:
+      tags:
+        - Backend
+      description: "Generate presigned url and get the image from s3 bucket"
+      summary: "Generate presigned URL to get image"
+      operationId: "get-image"
+      parameters:
+        - name: "external_id"
+          in: "query"
+          required: false
+          description: "If the external ID is not provided, it will use the external ID from the authorizer instead"
+          example: "cognito:48014d77-78a7-4dec-9ff1-7aa1b838ba93"
+          schema:
+            type: string
+      responses:
+        "200":
+          description: "Good response for get image"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: integer
+                    example: 200
+                    maximum: 200
+                    minimum: 200
+                  message:
+                    type: string
+                    example: "Successfully get image"
+                  request_id:
+                    type: string
+                    example: "e8d29b33-96c8-43b6-ae37-ec9c2f81ece3"
+                  data:
+                    type: object
+                    properties:
+                      image:
+                        type: string
+                        example: "chicken.jpeg"
+                      get_presigned_url:
+                        type: string
+                        example: "https://your-bucket-name.s3.amazonaws.com/your-object-key?AWSAccessKeyId=YOUR_ACCESS_KEY&Expires=EXPIRATION_TIMESTAMP&Signature=URL_SIGNATURE"
+        "404":
+          description: "Image not exist"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Image does not exist."
+                  request_id:
+                    type: string
+                    description: "AWS context request ID from lambda for debugging purposes"
+                    example: "cf8dc295-ca0a-4a2c-af59-92b7e487c5bd"
+                  error:
+                    type: object
+                    maxProperties: 2
+                    properties:
+                      name:
+                        type: string
+                        example: "ResourceNotFound"
+                      message:
+                        type: string
+                        example: "The requested resource are not found."
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Internal server error"
+                  request_id:
+                    type: string
+                    description: "AWS context request ID from lambda for debugging purposes"
+                    example: "cf8dc295-ca0a-4a2c-af59-92b7e487c5bd"
+                  error:
+                    type: object
+                    maxProperties: 2
+                    properties:
+                      name:
+                        type: string
+                        example: "InternalServerError"
+                      message:
+                        type: string
+                        example: "Unable to process your request at the moment. Please try again later."
+    post:
+      tags:
+        - Backend
+      description: "Generate presigned url to upload image into s3 bucket."
+      summary: "Generate presigned URL for upload image"
+      operationId: "upload-image"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_status:
+                  type: string
+      responses:
+        "200":
+          description: "Success response for generating presigned URL for uploading an object"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status_code:
+                    type: integer
+                    example: 200
+                    minimum: 200
+                    maximum: 200
+                  message:
+                    type: string
+                    example: "Successfully generate presigned URL for upload the object."
+                  request_id:
+                    type: string
+                    example: "cf8dc295-ca0a-4a2c-af59-92b7e487c5bd"
+                  data:
+                    type: object
+                    properties:
+                      upload_presigned_url:
+                        type: string
+                        example: "https://your-bucket-name.s3.amazonaws.com/your-object-key?AWSAccessKeyId=YOUR_ACCESS_KEY&Expires=EXPIRATION_TIMESTAMP&Signature=URL_SIGNATURE"
+        "500":
+          description: "Internal server error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "Internal server error"
+                  request_id:
+                    type: string
+                    description: "AWS context request ID from lambda for debugging purposes"
+                    example: "cf8dc295-ca0a-4a2c-af59-92b7e487c5bd"
+                  error:
+                    type: object
+                    maxProperties: 2
+                    properties:
+                      name:
+                        type: string
+                        example: "InternalServerError"
+                      message:
+                        type: string
+                        example: "Unable to process your request at the moment. Please try again later."
