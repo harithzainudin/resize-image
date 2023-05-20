@@ -17,4 +17,27 @@ async function generateGetPresignedUrl(bucketName, key) {
   return await getSignedUrl(client, command, { expiresIn: 3600 });
 }
 
-module.exports = { generatePutPresignedUrl, generateGetPresignedUrl };
+async function getObject(bucketName, key) {
+  const res = await client.send(
+    new GetObjectCommand({ Bucket: bucketName, Key: key })
+  );
+
+  if (res.Body) {
+    return await res.Body.transformToByteArray();
+  } else {
+    return undefined;
+  }
+}
+
+async function uploadObject(bucketName, key, body) {
+  await client.send(
+    new PutObjectCommand({ Bucket: bucketName, Key: key, Body: body })
+  );
+}
+
+module.exports = {
+  generatePutPresignedUrl,
+  generateGetPresignedUrl,
+  getObject,
+  uploadObject,
+};
