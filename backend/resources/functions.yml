@@ -4,6 +4,8 @@ resize-image:
   reservedConcurrency: 2
   memorySize: 256
   description: Used to resize the image that is being put inside the s3 bucket
+  layers:
+    - arn:aws:lambda:ap-southeast-1:072087018924:layer:sharp:1
   events:
     - s3:
         bucket: !Ref S3BucketResizeImage
