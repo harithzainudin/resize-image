@@ -20,9 +20,14 @@ module.exports.lambda_handler = async (event, context) => {
 
     if (response) {
       debug("Starting to resize image...");
-      const resizedImage = await sharp(response).resize(1000).toBuffer();
+      const resizedImages = await resizeImage(response);
+      const constructedPayload = constructUploadPayload(
+        resizedImages,
+        decodedKey
+      );
+
       debug("Finish resizing image...Starting to upload object");
-      await uploadObject(srcBucket, `resized/${srcKey}`, resizedImage);
+      await uploadImages(srcBucket, constructedPayload);
       debug("Finish uploading object...");
     }
 
@@ -37,10 +42,42 @@ module.exports.lambda_handler = async (event, context) => {
   }
 };
 
+function constructUploadPayload(resizedImages, key) {
+  const fileName = key.substring(key.lastIndexOf("/") + 1);
+  const extension = fileName.substring(fileName.lastIndexOf("."));
+
+  return [
+    {
+      key: `resized/${fileName.replace(extension, "")}/50${extension}`,
+      content: resizedImages[0],
+    },
+    {
+      key: `resized/${fileName.replace(extension, "")}/100${extension}`,
+      content: resizedImages[1],
+    },
+    {
+      key: `resized/${fileName.replace(extension, "")}/500${extension}`,
+      content: resizedImages[2],
+    },
+  ];
+}
+
+// To have additional extra precautions in any case the s3 key is encoded
+// Although during uploading, the user should upload the file name as UUID format
 function decodeKey(key) {
   return decodeURIComponent(key).replace(/\+/g, " ");
 }
 
-async function resizedImage(image) {}
+async function resizeImage(image) {
+  return await Promise.all([
+    sharp(image).resize(50).toBuffer(),
+    sharp(image).resize(100).toBuffer(),
+    sharp(image).resize(500).toBuffer(),
+  ]);
+}
 
-async function uploadImages() {}
+async function uploadImages(srcBucket, payload) {
+  await Promise.all(
+    payload.map((item) => uploadObject(srcBucket, item.key, item.content))
+  );
+}
