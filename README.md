@@ -13,4 +13,4 @@ There are many ways to upload and get an object from s3 bucket, and in this proj
 
 ## Process
 
-Upload image into s3 bucket using presigned url ➡️ lambda detect event ➡️ start processing to resize image ➡️ upload resized image into s3 bucket but with different prefix (to prevent infiinite loop processing) ➡️ call get list of processed images to see the images that have been processed ➡️ call get image endpoint to retrieve back the processed image presigned url
+Upload image into s3 bucket using presigned url ➡️ lambda detect event ➡️ start processing to resize image (50, 100 and 500) ➡️ upload all resized image into s3 bucket but with different prefix (to prevent infiinite loop processing) ➡️ call get list of processed images to see the images that have been processed ➡️ call get image endpoint to retrieve back the processed image presigned url
