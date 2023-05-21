@@ -14,7 +14,10 @@ module.exports.lambda_handler = async (event, context) => {
   try {
     const srcBucket = event.Records[0].s3.bucket.name;
     const srcKey = event.Records[0].s3.object.key;
-    const response = await getObject(srcBucket, srcKey);
+
+    const decodedKey = decodeKey(srcKey);
+    const response = await getObject(srcBucket, decodedKey);
+
     if (response) {
       debug("Starting to resize image...");
       const resizedImage = await sharp(response).resize(1000).toBuffer();
@@ -33,6 +36,10 @@ module.exports.lambda_handler = async (event, context) => {
     return errResponse(500, "Fail to process image", e);
   }
 };
+
+function decodeKey(key) {
+  return decodeURIComponent(key).replace(/\+/g, " ");
+}
 
 async function resizedImage(image) {}
 
