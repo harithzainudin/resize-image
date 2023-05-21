@@ -100,7 +100,7 @@ function initializeContext(event = null, context = null) {
           body: event?.body || null,
         },
       })
-    : "";
+    : logger.info("Event information", event);
 }
 
 /**
