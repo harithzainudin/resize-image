@@ -57,6 +57,3 @@ custom:
   prune:
     automatic: true
     number: 2
-
-package:
-  individually: true

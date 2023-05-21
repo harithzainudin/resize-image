@@ -16,12 +16,10 @@ module.exports.lambda_handler = async (event, context) => {
     const srcKey = event.Records[0].s3.object.key;
     const response = await getObject(srcBucket, srcKey);
     if (response) {
-      debug("Starting to resizing image...", { image: response });
-      console.time("resizing image");
-      const resizedImage = await sharp(response).resize(10).toBuffer();
-      console.timeEnd("resizing image");
-      debug("Finish to resizing image...Starting to upload object");
-      await uploadObject(srcBucket, `resized/10_${srcKey}`, resizedImage);
+      debug("Starting to resize image...");
+      const resizedImage = await sharp(response).resize(1000).toBuffer();
+      debug("Finish resizing image...Starting to upload object");
+      await uploadObject(srcBucket, `resized/${srcKey}`, resizedImage);
       debug("Finish uploading object...");
     }
 
@@ -35,3 +33,7 @@ module.exports.lambda_handler = async (event, context) => {
     return errResponse(500, "Fail to process image", e);
   }
 };
+
+async function resizedImage(image) {}
+
+async function uploadImages() {}
